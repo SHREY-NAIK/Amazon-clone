@@ -1,18 +1,29 @@
 import React from 'react';
 import Image from 'next/image';
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from 'next/router';
+import { selectItems } from '../slices/basketSlice';
+
+
 import {
     MenuIcon,
     SearchIcon,
     ShoppingCartIcon,
 } from "@heroicons/react/outline";
+import nextAuth from 'next-auth';
+import { useSelector } from 'react-redux';
 
 function Header() {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const items = useSelector(selectItems);
   return (
     <header>
         {/* Top nav */}
       <div className="flex items-center bg-amazon_blue p-1 flex-grow py-2">
         <div className="mt-2 flex items-center flex-grow sm:flex-grow-0">
-            <Image 
+            <Image
+                onClick={() => router.push('/')} 
                 src='https://links.papareact.com/f90'
                 width={150}
                 height={40}
@@ -27,16 +38,20 @@ function Header() {
         </div>
         {/* Right */}
         <div className="text-white flex items-center text-xs space-x-6 mx-6 whitespcae-nowrap">
-            <div className="link">
-                <p>Hello Rey!</p>
+            <div onClick={!session ? signIn : signOut} className="cursor-pointer link">
+                <p className="hover:underline">
+                  {session ? `hello, ${session.user.name}` : "signIn"}
+                </p>
                 <p className="font-extrabold md:text-sm">Accounts & lists</p>
             </div>
             <div className="link">
                 <p>Returns</p>
                 <p className="font-extrabold md:text-sm">& Orders</p>
             </div>
-            <div className="relative link flex items-center">
-                <span className="absolute top-0 right-0 md:right-10 h-4 w-4 bg-yellow-400 text-center rounded-full text-black font-bold">0</span>
+            <div onClick={() => router.push('/checkout')} className="relative link flex items-center">
+                <span className="absolute top-0 right-0 md:right-10 h-4 w-4 bg-yellow-400 text-center rounded-full text-black font-bold">
+                  {items.length}
+                </span>
                 <ShoppingCartIcon className="h-10" />
                 <p className="hidden md:inline font-extrabold md:text-sm mt-2">Basket</p>
             </div>
@@ -48,15 +63,15 @@ function Header() {
             <MenuIcon className="h-6 mr-1"/>
             All
         </p>
-        <p classname="link">Prime Video</p>
-        <p classname="link">Amazon Buisness</p>
-        <p classname="link">Today's Deals</p>
-        <p classname="hidden lg:inline-flex link">Electronics</p>
-        <p classname="hidden lg:inline-flex link">Food & Grocery</p>
-        <p classname="hidden lg:inline-flex link">Prime</p>
-        <p classname="hidden lg:inline-flex link">Buy Again</p>
-        <p classname="hidden lg:inline-flex link">Shopper Toolkit</p>
-        <p classname="hidden lg:inline-flex link">Health & Personal Care</p>
+        <p className="link">Prime Video</p>
+        <p className="link">Amazon Buisness</p>
+        <p className="link">Today's Deals</p>
+        <p className="hidden lg:inline-flex link">Electronics</p>
+        <p className="hidden lg:inline-flex link">Food & Grocery</p>
+        <p className="hidden lg:inline-flex link">Prime</p>
+        <p className="hidden lg:inline-flex link">Buy Again</p>
+        <p className="hidden lg:inline-flex link">Shopper Toolkit</p>
+        <p className="hidden lg:inline-flex link">Health & Personal Care</p>
 
       </div>
     </header>
