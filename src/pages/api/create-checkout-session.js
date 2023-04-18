@@ -54,8 +54,8 @@ export default async (req, res) => {
         line_items: transformedItems,
 
         mode: 'payment',
-        success_url: 'https://amazon-clone-lwntihjv0-shrey-naik.vercel.app/success',
-        cancel_url: 'https://amazon-clone-lwntihjv0-shrey-naik.vercel.app/checkout',
+        success_url: 'https://amazon-clone-git-main-shrey-naik.vercel.app/success',
+        cancel_url: 'https://amazon-clone-git-main-shrey-naik.vercel.app/checkout',
         metadata: {
             email,
             images: JSON.stringify(items.map((item) => item.image)),
