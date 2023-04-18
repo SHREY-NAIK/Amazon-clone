@@ -7,11 +7,28 @@ import { selectItems } from '../slices/basketSlice'
 import Currency from 'react-currency-formatter'
 import { useSession } from 'next-auth/react'
 import { selectTotal} from '../slices/basketSlice'
+import axios from 'axios'
+import { loadStripe } from '@stripe/stripe-js'
+const stripePromise = loadStripe('pk_test_51MsOa8SGLf8VBMtnbJGN7kaxp9HNDovh7X2uErhP8PGbaWShX2bwgZFMKqfYGqEIJzbRbwf5zp1ZAf3zMPg5N4im00Hk1Qs71d');
 
 function Checkout() {
     const items = useSelector(selectItems);
     const total = useSelector(selectTotal);
-    const {session} = useSession();
+    const { data: session } = useSession();
+
+    const createCheckoutSession = async () => {
+        const stripe = await stripePromise;
+        const checkoutSession = await axios.post('/api/create-checkout-session',
+        {
+          items: items,
+          email: session.user.email
+        });
+        const result = await stripe.redirectToCheckout({
+          sessionId: checkoutSession.data.id
+        })
+        if (result.error) alert(result.error.message);        
+    };
+
   return (
     <div className="bg-gray-100">
       <Header />
@@ -59,8 +76,8 @@ function Checkout() {
                   </span>
                   </h2>
 
-                  <button disabled = {!session} className={`mt-2 p-2 text-xs md:text-sm border md:text-sm  border-yellow-300 rounded-sm bg-gradient-to-b from-yellow-200 to-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 active:from-yellow-500 ${!session && `from-gray-300 to-gray-500 border-gray-200 text-gray-300 cursor-not-allowed`}`}>
-                    {!session ? 'sign in to checkout' : "proceed to checkout"}
+                  <button role="link" onClick={createCheckoutSession} disabled={!session} className={`mt-2 p-2 text-xs md:text-sm border md:text-sm  border-yellow-300 rounded-sm bg-gradient-to-b from-yellow-200 to-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 active:from-yellow-500 ${!session && "from-gray-300 to-gray-500 border-gray-200 text-gray-300 cursor-not-allowed"}`}>
+                    {!session ? "sign in to checkout" : "proceed to checkout"}
                   </button>
                 </>
             )}
