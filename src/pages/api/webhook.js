@@ -10,7 +10,7 @@ const app = !admin.apps.length ? admin.initializeApp({
 
 const stripe= require('stripe')('sk_test_51MsOa8SGLf8VBMtnVNwITVv6TNA973VSOGk7zo4D41Egvrtnex7GgvsMUgPBIxzgtOxoyKPF7SUka7M5UyHxAsKB000m6kkPsp');
 
-const endpointSecret = 'whsec_8718988d82faef5c4516013a3091baac8f82ceacf54b74e71ce6899add26598a';
+const endpointSecret = 'whsec_48iZWAMloxGhbuRKEpWLtHemvbQMJbBF';
 
 const fulfillOrder = async(session) => {
     return app.firestore().collection("users").doc(session.metadata.email).collection("orders").doc(session.id).set({
